@@ -103,3 +103,7 @@ REVISION
 /mpc*
 /gmp*
 /isl*
+
+*/.vs/
+*/playdom
+*/player
