@@ -1,14 +1,10 @@
-/*
- * unittest1.c
- *
- */
-
-/*
- * Include the following lines in your makefile:
- *
- * unittest1: unittest1.c dominion.o rngs.o
- *      gcc -o unittest1 -g  unittest1.c dominion.o rngs.o $(CFLAGS)
- */
+/*********************************************************
+ * Name: Ting Sheppy 
+ * Course: CS 362 Software Engineering II
+ * File: unittest1.c
+ * Description: Unit test for dominion game. 
+ * Test function: baronAction
+ *********************************************************/
 
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -20,20 +16,21 @@
 
 #define TESTCARD "Baron"
 
+// assert helper function 
 void assertCheck(int A, int B, int testNum);
 
 int main() {
 
     int choice1 = 0;
-    int seed = 1000;
+	int seed = rand() % 1000 + 1;
     int numPlayers = 2;
     int thisPlayer = 0;
 	struct gameState beforeState, afterState;
-	int k[10] = {baron, minion, ambassador, embargo, tribute, mine, cutpurse, remodel, smithy, village };
+	int k[10] = {baron, minion, ambassador, embargo, tribute, mine, cutpurse, remodel, smithy, village};
 
 	initializeGame(numPlayers, k, seed, &beforeState);
 
-	printf("\n----------------- Testing Card: %s ----------------\n", TESTCARD);
+	printf("\n----------------- Testing Function: %s ----------------\n", TESTCARD);
 
 	// ----- Test 1 -----
 	printf("TEST 1: No estate found, check if player gets an estate card and supply count is correct\n");

@@ -1234,7 +1234,6 @@ int minionAction(struct gameState * state, int currentPlayer, int choice1, int c
 			{
 				if (state->handCount[i] > 4)
 				{
-					printf("state->handCount[%d]: %d\n", i, state->handCount[i]);
 					//discard hand
 					while (state->handCount[i] > 0)
 					{

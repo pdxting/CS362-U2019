@@ -1,9 +1,9 @@
 /*********************************************************
  * Name: Ting Sheppy
  * Course: CS 362 Software Engineering II
- * File: cardtest4.c
+ * File: cardtest2.c
  * Description: Unit test for dominion game.
- * Test function: getWinners
+ * Test function: shuffle
  *********************************************************/
 
 #include "dominion.h"
@@ -14,7 +14,7 @@
 #include "rngs.h"
 #include <stdlib.h>
 
-#define TESTFUNCTION "getWinners"
+#define TESTFUNCTION "shuffle"
 
 // assert helper function
 void assertCheck(int A, int B, int testNum);
@@ -22,9 +22,9 @@ void assertCheck(int A, int B, int testNum);
 int main() {
 	
 	int seed = rand() % 1000 + 1;
-	int numPlayers = 4;
-	int players[MAX_PLAYERS];
-	int winnerNum;
+	int numPlayers = 3;
+	int thisPlayer = 0;
+	int returnValue = 0;
 	struct gameState beforeState, afterState;
 	int k[10] = { baron, minion, ambassador, embargo, tribute, mine, cutpurse, remodel, smithy, village };
 	initializeGame(numPlayers, k, seed, &beforeState);
@@ -32,31 +32,37 @@ int main() {
 	printf("\n----------------- Testing Function: %s ----------------\n", TESTFUNCTION);
 
 	// ----- Test 1 -----
-	printf("TEST 1: Check if correct winner is found\n");
+	printf("TEST 1: Check if shuffle is needed\n");
 	
+	afterState.deckCount[thisPlayer] = 0;
+
+	returnValue = shuffle(thisPlayer, &afterState);
+	printf("Set deckCount zero\n");
+	printf("Expecting return value of -1\n");
+	assertCheck(returnValue, -1, 1);
+	
+	// ----- Test 2 -----
+	printf("TEST 2: Check if deck is shuffled\n");
+	initializeGame(numPlayers, k, seed, &beforeState);
 	memcpy(&afterState, &beforeState, sizeof(struct gameState));
-
-	// Let last player gets all province cards to get heighest scores
-	afterState.discardCount[numPlayers-1] = 12;
-	for (int i = 0; i < 12; i++)
+	shuffle(thisPlayer, &afterState);
+	int shuffledCards = afterState.deckCount[thisPlayer];
+	for (int i = 0; i < afterState.deckCount[thisPlayer]; i++)
 	{
-		afterState.discard[numPlayers-1][i] = province;
+		if (beforeState.deck[thisPlayer][i] == afterState.deck[thisPlayer][i]) {
+			shuffledCards--;
+		}
 	}
-
-	// Print scores for all players
-	for (int i = 0; i < numPlayers; i++)
+	if (shuffledCards == 0)
 	{
-		printf("Score for player %d: %d\n", i, scoreFor(i, &afterState));
+		printf("Cards not shuffled. All cards are still in order.\n");
+		assertCheck(shuffledCards, -1, 2);
 	}
-
-	getWinners(players, &afterState);
-
-	for (winnerNum = 0; winnerNum < numPlayers; winnerNum++) {
-		if (players[winnerNum] == 1)
-			printf("Player %d has the highest points\n", winnerNum);
+	else
+	{
+		printf("Card shuffled. Cards are now in different order.\n");
+		assertCheck(1, 1, 2);
 	}
-
-	assertCheck(numPlayers, winnerNum, 1);
 
 	return 0;
 }
