@@ -1034,12 +1034,6 @@ int tributeAction(struct gameState * state, int currentPlayer, int nextPlayer)
 			card1 = state->discard[nextPlayer][state->discardCount[nextPlayer] - 1];
 			state->discardCount[nextPlayer]--;
 		}
-		else {
-			//No Card to Reveal
-			if (DEBUG) {
-				printf("No cards to reveal\n");
-			}
-		}
 	}
 
 	else {
@@ -1156,7 +1150,7 @@ int baronAction(struct gameState * state, int currentPlayer, int choice1)
 	state->numBuys++;//Increase buys by 1!
 	if (choice1 > 0) {//Boolean true or going to discard an estate
 		int currentCard = 0;//Iterator for hand!
-		int estateNotFound = 0;//Flag for discard set! //***** BUG: estateNotFound = 1 changed to 0;
+		int estateNotFound = 1;//Flag for discard set! 
 		while (estateNotFound) {
 			if (state->hand[currentPlayer][currentCard] == estate) {//Found an estate card!
 				state->coins += 4;//Add 4 coins to the amount of coins
@@ -1170,13 +1164,9 @@ int baronAction(struct gameState * state, int currentPlayer, int choice1)
 				estateNotFound = 0;//Exit the loop
 			}
 			else if (currentCard > state->handCount[currentPlayer]) {
-				if (DEBUG) {
-					printf("No estate cards in your hand, invalid choice\n");
-					printf("Must gain an estate if there are any\n");
-				}
 				if (supplyCount(estate, state) > 0) {
 					gainCard(estate, state, 0, currentPlayer); //Gain an estate card
-					state->supplyCount[estate]--;//Decrement estates
+					state->supplyCount[estate]--;//Decrement estates *** BUG in the original code
 					if (supplyCount(estate, state) == 0) {
 						isGameOver(state);
 					}
@@ -1191,7 +1181,7 @@ int baronAction(struct gameState * state, int currentPlayer, int choice1)
 	else {
 		if (supplyCount(estate, state) > 0) {
 			gainCard(estate, state, 0, currentPlayer);//Gain an estate
-			state->supplyCount[estate]++;//Decrement Estates //***** BUG: Changed to increment estates
+			state->supplyCount[estate]--; //Decrement Estates *** BUG in the original code
 			if (supplyCount(estate, state) == 0) {
 				isGameOver(state);
 			}
